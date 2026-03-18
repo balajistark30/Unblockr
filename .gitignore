@@ -1,0 +1,75 @@
+# =========================
+# Flutter / Dart
+# =========================
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+
+# =========================
+# Android
+# =========================
+android/.gradle/
+android/app/build/
+android/local.properties
+
+# =========================
+# iOS
+# =========================
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/.last_build_id
+
+# =========================
+# Web
+# =========================
+web/build/
+
+# =========================
+# IDE / Editor
+# =========================
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# =========================
+# MacOS
+# =========================
+.DS_Store
+
+# =========================
+# Logs & temp
+# =========================
+*.log
+*.swp
+
+# =========================
+# Python (Backend - FastAPI)
+# =========================
+venv/
+__pycache__/
+*.pyc
+
+# =========================
+# ML Models (VERY IMPORTANT)
+# =========================
+models/
+*.pt
+*.pth
+*.onnx
+
+# =========================
+# Environment / Secrets
+# =========================
+.env
+
+# =========================
+# Misc
+# =========================
+.history
+.svn/
