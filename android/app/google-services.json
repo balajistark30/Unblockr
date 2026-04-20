@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "540722641764",
+    "project_id": "unblockr-625fc",
+    "storage_bucket": "unblockr-625fc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:540722641764:android:33eb87635cb15462015871",
+        "android_client_info": {
+          "package_name": "com.smartunblocker.app.smart_unblocker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "540722641764-ieucldq4hv1jpd50ftvoi2fnrd5o2cla.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.smartunblocker.app.smart_unblocker",
+            "certificate_hash": "0ecbb49f37b020fb88e7fb6bc9b0bf52f4e03990"
+          }
+        },
+        {
+          "client_id": "540722641764-cplkoo1ert1qkr1gftsstee1m2hsgi7q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD11_UcoRU21MGhkmqGnMUcmCdNds0ZgFk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "540722641764-cplkoo1ert1qkr1gftsstee1m2hsgi7q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "540722641764-thcd8efq55h404vhmr25unj4sb657i5f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.smartunblocker.app.smartUnblocker"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
