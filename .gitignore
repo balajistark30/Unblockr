@@ -72,4 +72,4 @@ models/
 # Misc
 # =========================
 .history
-.svn/
+.svn/.claude/
