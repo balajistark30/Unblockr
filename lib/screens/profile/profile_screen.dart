@@ -1,11 +1,22 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:unblockr/screens/settings/settings_screen.dart';
+
+import '../auth/login_screen.dart';
+import 'my_vehicles_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+    final displayName = user?.displayName?.isNotEmpty == true
+        ? user!.displayName!
+        : 'User';
+    final email = user?.email ?? '';
 
     return Scaffold(
       backgroundColor: const Color(0xFFEAF3FF),
@@ -40,7 +51,7 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: 15),
 
             Text(
-              "Balaji Pillalamarri",
+              displayName,
               style: GoogleFonts.inter(
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
@@ -50,7 +61,7 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: 5),
 
             Text(
-              "balaji@email.com",
+              email,
               style: GoogleFonts.inter(
                 color: Colors.grey[600],
               ),
@@ -62,20 +73,46 @@ class ProfileScreen extends StatelessWidget {
               leading: const Icon(Icons.directions_car),
               title: const Text("My Vehicles"),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const MyVehiclesScreen(),
+                    ),
+                  );
+                },
             ),
 
             ListTile(
               leading: const Icon(Icons.settings),
               title: const Text("Settings"),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const SettingsScreen(),
+                  ),
+                );
+              },
             ),
 
             ListTile(
               leading: const Icon(Icons.logout),
               title: const Text("Logout"),
-              onTap: () {},
+              onTap: () async {
+                // Firebase sign-out FIRST — clears the session immediately.
+                // Google sign-out is fire-and-forget to avoid hangs.
+                await FirebaseAuth.instance.signOut();
+                GoogleSignIn.instance.signOut().catchError((_) {});
+
+                if (!context.mounted) return;
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                  (route) => false,
+                );
+              },
             ),
           ],
         ),

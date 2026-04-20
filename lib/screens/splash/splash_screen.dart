@@ -1,5 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:unblockr/providers/vehicle_provider.dart';
+import 'package:unblockr/screens/home/main_screen.dart';
 import '../onboarding/onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -11,7 +15,6 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
-
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
@@ -33,25 +36,56 @@ class _SplashScreenState extends State<SplashScreen>
     _scaleAnimation = Tween<double>(
       begin: 0.9,
       end: 1.0,
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeOut,
-      ),
-    );
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOut,
+    ));
 
     _controller.forward();
 
-    Future.delayed(const Duration(seconds: 3), () {
+    // Start routing immediately — _routeUser waits for both the minimum
+    // display time AND Firebase to restore auth state before navigating.
+    _routeUser();
+  }
+
+  Future<void> _routeUser() async {
+    try {
+      // Wait for BOTH:
+      //   - minimum 2 s splash display time
+      //   - Firebase to restore auth state from local cache
+      // whichever takes longer wins, so the splash never flashes.
+      final results = await Future.wait([
+        Future.delayed(const Duration(seconds: 2)),
+        FirebaseAuth.instance.authStateChanges().first,
+      ]);
+
       if (!mounted) return;
 
+      final user = results[1] as User?;
+
+      if (user != null && user.emailVerified) {
+        // Sync plates fire-and-forget — never block navigation on network ops
+        context.read<VehicleProvider>().syncAllPlates().catchError((_) {});
+
+        if (!mounted) return;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const MainScreen()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const OnboardingScreen()),
+        );
+      }
+    } catch (_) {
+      // Firebase failed to initialise — fall back to onboarding safely
+      if (!mounted) return;
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (context) => const OnboardingScreen(),
-        ),
+        MaterialPageRoute(builder: (_) => const OnboardingScreen()),
       );
-    });
+    }
   }
 
   @override
@@ -64,23 +98,15 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
       body: FadeTransition(
         opacity: _fadeAnimation,
-
         child: ScaleTransition(
           scale: _scaleAnimation,
-
           child: Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-
-                Image.asset(
-                  "assets/logo/unblockr_logo.png",
-                  width: 160,
-                ),
-
+                Image.asset("assets/logo/unblockr_logo.png", width: 160),
                 Text(
                   "Unblockr",
                   style: GoogleFonts.inter(
@@ -89,7 +115,6 @@ class _SplashScreenState extends State<SplashScreen>
                     color: const Color(0xFF111827),
                   ),
                 ),
-
                 Text(
                   "Parking, solved.",
                   style: GoogleFonts.inter(
@@ -99,7 +124,6 @@ class _SplashScreenState extends State<SplashScreen>
                     letterSpacing: 0.5,
                   ),
                 ),
-
               ],
             ),
           ),
